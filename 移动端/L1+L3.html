@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1</title>
+    <link rel="stylesheet" href="./iconfont.css">
+    <style>
+       * {
+           padding:0;
+           margin:0;
+       }
+        .date {
+            color:rgb(115, 173, 255);
+            padding:5px;
+            padding-right: 20px;
+            font:5px "Microsoft";
+        }
+        .title {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            flex-wrap: wrap;
+            border-left:solid rgb(217, 217, 217) 1px;
+            color:rgb(115, 173, 255);
+            padding:5px; 
+            font:10px "Microsoft";
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            padding:5px;
+        }
+        .history {
+            background-color: rgb(49, 124, 251);
+            color:white;
+            padding: 8px;
+            font:400 15px "Microsoft";
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        #date-container {
+            border-bottom:solid rgb(165, 163, 163) 1px;
+            padding:5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        #date-container span:nth-child(odd) {
+            display: block;
+            color:white;
+            width:15px;
+            height:15px;
+            border-radius: 50%;
+            padding:5px;
+            background-color: rgb(216, 216, 212);
+            font-size:10px;
+        }
+        .box {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+            width:100%;
+            padding:8px;
+            background-color: whitesmoke;
+            border-bottom:dotted rgb(168, 167, 167) 1px;
+            font:12px "Microsoft";
+        }
+        #outtext {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: absolute;
+            top:36px;
+            width:100%;
+        }
+        #fix {
+            position: fixed;
+            bottom:20%;
+            right:5%;
+            width:30px;
+            height:30px;
+            padding:10px;
+            border-radius: 50%;
+            box-shadow:0 2px 16px rgba(72, 106, 218, 0.473), 0 0 1px rgba(72, 106, 218, 0.473), 0 0 1px rgba(72, 106, 218, 0.473); 
+            color:blue;
+            font-size:25px;
+            font-style: 700;
+        }
+    </style>
+</head>
+<div class='history'>
+    <span class="iconfont icon-shouye"></span>历史上的今天<span id='out' class="iconfont icon-goutongye_santiaogang_tiaozhuanxuanzehaizi"></span></div>
+<div id="date-container">
+    <span class="iconfont icon-xiangzuojiantou"></span>
+    <span id='date' style="width:150px;text-align: center;"></span>
+    <span class="iconfont icon-xiangyoujiantou"></span>
+</div>
+<div id="fix" class="iconfont icon-xiangshangjiantou"></div>
+<body>
+    <script>
+        const get = async () => {
+            const res = await fetch(" https://api.oick.cn/lishi/api.php");
+            const ret = await res.json();
+            console.log(ret);
+            date.innerText=ret.day.slice(0,2)+'月'+ret.day.slice(4,6)+'日';
+            for(let i=0;i<ret.result.length;i++)
+            {
+                const container = document.createElement("div");
+                container.className = 'container';
+                const date = document.createElement("div");
+                date.innerHTML=ret.result[i].date.slice(0,5);
+                date.className='date';
+                const title = document.createElement("div");
+                title.innerHTML=ret.result[i].title;
+                title.className='title';
+                container.append(date);
+                container.append(title);
+                document.body.append(container);
+            }
+        }
+        get();
+        let sign = 1;
+        out.addEventListener('click',()=>
+        {
+            const c = document.querySelectorAll('.container');
+            if(sign) {
+            const arr = ["电话区号查询","手机号码查询","万年历查询","北京时间查询","IP地址查询"];
+            const outtext = document.createElement('div');
+            outtext.id='outtext';
+            for(let i=0;i<arr.length;i++)
+            {
+                const box = document.createElement('div');
+                box.className="box";
+                box.innerText=arr[i];
+                outtext.append(box);
+            }
+            document.body.append(outtext);
+            for(let j=0;j<c.length;j++)
+            {
+                c[j].style.backgroundColor='#C0C0C0';
+            }
+            out.className="iconfont icon-close";
+            sign = 0;
+        }
+        else {
+            outtext.remove();
+            for(let j=0;j<c.length;j++)
+            {
+                c[j].style.backgroundColor='#ffffff';
+            }
+            out.className="iconfont icon-goutongye_santiaogang_tiaozhuanxuanzehaizi";
+            sign = 1;
+        }
+        })
+    </script>
+</body>
+</html>
